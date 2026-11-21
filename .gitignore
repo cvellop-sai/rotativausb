@@ -1,0 +1,48 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+.env.*
+
+# --- Artefactos de construcción Debian ---
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/*.substvars
+debian/*.debhelper
+debian/rotativausb/
+*.deb
+*.changes
+*.buildinfo
+*.dsc
+*.tar.gz
+*.tar.xz
+*.upload
+
+# --- Pruebas y cobertura ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Entornos e IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+
+# --- Registros, temporales e imágenes de prueba ---
+*.log
+*.img
+/tmp/

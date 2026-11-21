@@ -1,0 +1,14 @@
+[Unit]
+Description=RotativaUSB - demonio privilegiado
+After=local-fs.target
+Documentation=man:rotativausb(8)
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/rotativausb-daemon
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=yes
+ProtectSystem=full
+# No usar ProtectHome: la carpeta de origen suele estar en /home
+PrivateTmp=no

@@ -1,0 +1,15 @@
+#!/usr/bin/python3
+"""Punto de entrada de la GUI."""
+
+import os
+import sys
+
+sys.dont_write_bytecode = True
+
+sys.path.insert(0, "/usr/lib/python3/dist-packages")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+from rotativausb.gui import main
+
+if __name__ == "__main__":
+    main()

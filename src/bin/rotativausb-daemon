@@ -1,0 +1,17 @@
+#!/usr/bin/python3
+"""Punto de entrada del demonio privilegiado."""
+
+import os
+import sys
+
+# Evita crear __pycache__ propiedad de root dentro del árbol de fuentes:
+# dh_clean no podría borrarlos al construir el .deb con un usuario normal.
+sys.dont_write_bytecode = True
+
+sys.path.insert(0, "/usr/lib/python3/dist-packages")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+from rotativausb.daemon import main
+
+if __name__ == "__main__":
+    main()

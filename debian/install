@@ -1,0 +1,11 @@
+src/bin/rotativausb-daemon	usr/sbin
+src/bin/rotativausb	usr/bin
+src/rotativausb/__init__.py	usr/lib/python3/dist-packages/rotativausb
+src/rotativausb/common.py	usr/lib/python3/dist-packages/rotativausb
+src/rotativausb/daemon.py	usr/lib/python3/dist-packages/rotativausb
+src/rotativausb/diskops.py	usr/lib/python3/dist-packages/rotativausb
+src/rotativausb/gui.py	usr/lib/python3/dist-packages/rotativausb
+share/es.rotativausb.policy	usr/share/polkit-1/actions
+share/es.rotativausb.Daemon.service	usr/share/dbus-1/system-services
+share/es.rotativausb.conf	etc/dbus-1/system.d
+share/rotativausb.desktop	usr/share/applications

@@ -1,0 +1,20 @@
+Source: rotativausb
+Section: utils
+Priority: optional
+Maintainer: Administrador <admin@example.com>
+Build-Depends: debhelper-compat (= 13), dh-python, python3-all
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: rotativausb
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends},
+ python3-gi, gir1.2-gtk-4.0, python3-dbus, python3-pyudev,
+ dosfstools, exfatprogs, ntfs-3g, e2fsprogs, parted, gdisk,
+ rsync, util-linux, udisks2, polkitd, systemd
+Description: Prepara pendrives USB para exámenes al conectarlos
+ Aplicación con interfaz GTK4 que, tras activar la replicación, detecta
+ automáticamente cada pendrive USB, crea la tabla de particiones (GPT o MBR),
+ formatea con el sistema de archivos elegido y, opcionalmente, copia el
+ contenido de una carpeta. Incluye cuatro modos de confirmación y una cola
+ de trabajo para tratar varios dispositivos sin solapamientos.

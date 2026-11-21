@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "configure" ]; then
+    # El daemon NO se habilita en el arranque: dbus-daemon lo inicia bajo
+    # demanda la primera vez que la GUI llama a Activate().
+    systemctl daemon-reload >/dev/null 2>&1 || true
+    if systemctl is-active --quiet dbus 2>/dev/null; then
+        systemctl reload dbus >/dev/null 2>&1 || true
+    fi
+fi
+
+#DEBHELPER#

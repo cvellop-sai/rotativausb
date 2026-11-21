@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=RotativaUSB
+GenericName=Preparador de pendrives para exámenes
+Comment=Formatea y prepara pendrives USB en cuanto se conectan
+Exec=/usr/bin/rotativausb
+Icon=drive-removable-media
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true

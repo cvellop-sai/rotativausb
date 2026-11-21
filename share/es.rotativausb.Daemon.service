@@ -1,0 +1,5 @@
+[D-BUS Service]
+Name=es.rotativausb.Daemon
+Exec=/usr/sbin/rotativausb-daemon
+User=root
+SystemdService=rotativausb.service
