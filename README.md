@@ -8,7 +8,7 @@ udev y prepara automáticamente cada pendrive USB que se conecta.
 | Aspecto | Decisión |
 |---|---|
 | GUI | GTK4 (PyGObject) → dependencias apt, `.deb` sencillo |
-| Equipos de examen | Linux → `ext4` es el sistema de archivos por defecto |
+| Sistema de archivos por defecto | `exFAT`: escribible por cualquier usuario y sin depender de UIDs; se puede elegir ext4/NTFS/FAT32 |
 | "Borrado completo" | Formateo rápido (`wipefs` + nueva tabla + `mkfs`), **sin** sobrescribir sectores |
 | Privilegios | Demonio root en el bus del sistema + polkit (una sola autorización al activar), bajo demanda |
 | Etiqueta del volumen | editable en la GUI (por defecto `EXAMEN`, máx. 11 caracteres; se sanea antes de aplicarla) |
@@ -76,17 +76,23 @@ expulsar el pendrive"*, marcada por defecto):
 ### Propietario y permisos (ext3/ext4)
 
 `rsync -a` conserva el UID/GID de la carpeta de origen. Si el equipo de examen
-tiene otros UIDs, esos archivos podrían no ser legibles/escribibles. Con la
-casilla *"Normalizar propietario y permisos (ext3/ext4)"* (marcada por
-defecto) se aplica `chown -R 0:0` y `chmod -R u+rwX,go+rX`: directorios 755,
-archivos 644 y se conserva el bit ejecutable donde ya existía. Cualquier
-usuario puede leer/ejecutar; solo root puede modificar el contenido, que es
-lo deseable en un examen.
+tiene otros UIDs, esos archivos no serían modificables por los alumnos. Con la
+casilla *"Permitir a los alumnos modificar el contenido (ext3/ext4)"*
+(marcada por defecto) se aplica:
 
-No se usa `777`/`666`: permitiría que cualquier alumno altere el material del
-examen, y además esos permisos no existen en exFAT/FAT32/NTFS. Si necesitas
-una carpeta donde los alumnos **sí** puedan escribir respuestas, añádela al
-origen y se le puede dar permiso de escritura aparte.
+```bash
+chown -R 0:0 <montaje>
+chmod -R a+rwX <montaje>
+```
+
+Es decir, dueño `root` (independiente de UIDs), directorios **777** y
+archivos **666**, conservando la `x` en los que ya fueran ejecutables. Los
+alumnos pueden crear, borrar y editar archivos durante el examen.
+
+Para exFAT/FAT32/NTFS no hay permisos Unix que ajustar: por eso el sistema
+por defecto es **exFAT**, que cualquier usuario del equipo puede escribir sin
+depender de UIDs. ext4 sigue disponible si se necesitan enlaces o permisos,
+con la normalización descrita arriba.
 
 > **exFAT/FAT32/NTFS:** estos sistemas no admiten propietario, grupo ni
 > permisos Unix. `rsync` se ejecuta con `--no-owner --no-group --no-perms`

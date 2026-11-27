@@ -136,12 +136,12 @@ class ReplicatorApp(Gtk.Application):
         root.append(self.cb_poweroff)
 
         self.cb_normalize = Gtk.CheckButton(
-            label="Normalizar propietario y permisos (ext3/ext4)")
+            label="Permitir a los alumnos modificar el contenido (ext3/ext4)")
         self.cb_normalize.set_active(common.DEFAULT_CONFIG["normalize_perms"])
         self.cb_normalize.set_tooltip_text(
-            "Pone los archivos a root:root con permisos 755/644 para que "
-            "cualquier usuario del equipo de examen pueda leerlos sin "
-            "depender de los UID del origen.")
+            "Pone los archivos a root:root con permisos 777/666 (mantiene "
+            "la 'x' en ejecutables) para que cualquier alumno pueda crear, "
+            "borrar y modificar archivos sin depender de los UID del origen.")
         root.append(self.cb_normalize)
 
         self.cb_verify = Gtk.CheckButton(

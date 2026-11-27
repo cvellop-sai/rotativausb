@@ -26,14 +26,14 @@ CLONE_MODES = {
 
 DEFAULT_CONFIG = {
     "table": "gpt",
-    "filesystem": "ext4",   # los equipos de examen son Linux
+    "filesystem": "exfat",   # por defecto: escribible por cualquier usuario
     "confirm_mode": "each",
     "clone_mode": "wipe",
     "source": "",
     "label": "EXAMEN",
     "power_off": True,
     "verify": True,         # comprobar el contenido antes de expulsar
-    "normalize_perms": True,  # ext3/ext4: dueño root y permisos universales
+    "normalize_perms": True,  # ext3/ext4: dueño root y escritura para todos
     "use_udisks2": False,   # alternativa a mkfs directo para exFAT/NTFS
 }
 
