@@ -135,6 +135,15 @@ class ReplicatorApp(Gtk.Application):
         self.cb_poweroff.set_active(common.DEFAULT_CONFIG["power_off"])
         root.append(self.cb_poweroff)
 
+        self.cb_normalize = Gtk.CheckButton(
+            label="Normalizar propietario y permisos (ext3/ext4)")
+        self.cb_normalize.set_active(common.DEFAULT_CONFIG["normalize_perms"])
+        self.cb_normalize.set_tooltip_text(
+            "Pone los archivos a root:root con permisos 755/644 para que "
+            "cualquier usuario del equipo de examen pueda leerlos sin "
+            "depender de los UID del origen.")
+        root.append(self.cb_normalize)
+
         self.cb_verify = Gtk.CheckButton(
             label="Verificar el contenido antes de expulsar el pendrive")
         self.cb_verify.set_active(common.DEFAULT_CONFIG["verify"])
@@ -286,6 +295,7 @@ class ReplicatorApp(Gtk.Application):
             "source": self.source if _selected(self.cb_clone) == "prepare" else "",
             "label": self.entry_label.get_text().strip() or common.DEFAULT_CONFIG["label"],
             "power_off": self.cb_poweroff.get_active(),
+            "normalize_perms": self.cb_normalize.get_active(),
             "verify": self.cb_verify.get_active(),
             "use_udisks2": self.cb_udisks2.get_active(),
         }

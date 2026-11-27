@@ -432,6 +432,14 @@ def prepare_device(info, config, log=None, progress=None):
                 log=log,
             )
 
+            if fs in ("ext3", "ext4") and config.get("normalize_perms", True):
+                progress(92, "perms", "Normalizando propietario y permisos…")
+                # rsync -a copió el UID del origen. En otro equipo con otro
+                # UID los archivos no serían escribibles ni legibles según
+                # qué permisos. root:root + 755/644 evita depender de UIDs.
+                run(["chown", "-R", "0:0", mountpoint], log=log)
+                run(["chmod", "-R", "u+rwX,go+rX", mountpoint], log=log)
+
         if config.get("verify", True):
             progress(94, "verify", "Verificando contenido del pendrive…")
             check_mount = mountpoint

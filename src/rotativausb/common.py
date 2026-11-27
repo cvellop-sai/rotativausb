@@ -33,6 +33,7 @@ DEFAULT_CONFIG = {
     "label": "EXAMEN",
     "power_off": True,
     "verify": True,         # comprobar el contenido antes de expulsar
+    "normalize_perms": True,  # ext3/ext4: dueño root y permisos universales
     "use_udisks2": False,   # alternativa a mkfs directo para exFAT/NTFS
 }
 
