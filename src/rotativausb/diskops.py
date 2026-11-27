@@ -397,8 +397,14 @@ def prepare_device(info, config, log=None, progress=None):
             progress(55, "mount", "Montando partición…")
             run(["mount", "-o", "rw", part, mountpoint], log=log)
             progress(60, "copy", "Copiando contenido…")
+            rsync_opts = ["-a", "--info=progress2"]
+            # exFAT/FAT32/NTFS no tienen propietario, grupo ni permisos Unix:
+            # conservarlos hace que rsync falle con 'chown: Operation not
+            # permitted' y código 23. ext3/ext4 sí los conservan.
+            if fs not in ("ext3", "ext4"):
+                rsync_opts += ["--no-owner", "--no-group", "--no-perms"]
             run_streaming(
-                ["rsync", "-a", "--info=progress2", source + "/", mountpoint + "/"],
+                ["rsync"] + rsync_opts + [source + "/", mountpoint + "/"],
                 progress_cb=lambda pct, line: progress(
                     60 + int(pct * 0.35), "copy", line
                 ),

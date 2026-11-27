@@ -73,6 +73,13 @@ expulsar el pendrive"*, marcada por defecto):
 - En el modo *borrado completo* se monta el volumen solo de lectura y se
   exige que esté vacío. Se ignora `lost+found`, que crea `mke2fs` en ext3/ext4.
 
+> **exFAT/FAT32/NTFS:** estos sistemas no admiten propietario, grupo ni
+> permisos Unix. `rsync` se ejecuta con `--no-owner --no-group --no-perms`
+> para esos casos; si se conservaran, `chown` fallaría (*Operation not
+> permitted*) y rsync terminaría con código 23, abortando la replicación.
+> ext3/ext4 sí conservan esos atributos. Tampoco se comparan permisos en la
+> verificación: esta se basa en rutas y hashes SHA-256 del contenido.
+
 Si falta algo, sobra algo o difiere el contenido de un archivo, se lanza un
 error, **no se expulsa el dispositivo** y el registro `AUDIT` queda como
 `result=error` con el detalle (`missing`, `extra`, `different`).
