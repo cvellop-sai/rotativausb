@@ -139,6 +139,30 @@ Si UDisks2 falla por cualquier motivo, se registrará el aviso y se hará un
 detiene. La opción solo afecta a exFAT y NTFS; ext3/ext4/FAT32 siguen usando
 `mkfs` directo.
 
+## Si un pendrive ext4 se monta solo de lectura
+
+Dos causas habituales, ambas cubiertas:
+
+1. **Desmontaje fallido.** Si el volumen seguía montado al expulsarlo, ext4
+   queda "sucio" y el siguiente equipo lo monta en modo solo lectura. Ahora
+   `umount` se ejecuta con verificación estricta: si falla, se aborta y **no**
+   se llama a `udisksctl power-off`, con el error en el registro `AUDIT`.
+2. **Características no soportadas por el kernel del otro equipo**.
+   `mkfs.ext4` se ejecuta con `-O ^metadata_csum,^64bit` para que incluso
+   kernels antiguos puedan montar el volumen en lectura/escritura (en un
+   pendrive no se pierde capacidad: el límite sin `64bit` es 16 TiB).
+
+Si aun así se monta en solo lectura, comprueba en el otro equipo:
+
+```bash
+dmesg | grep -i ext4 | tail -20
+mount | grep -i sdX1
+```
+
+Un mensaje `couldn't mount RDWR because of unsupported optional features`
+indica una característica del sistema de archivos; `EXT4-fs error` o
+`Filesystem has unsupported feature` indica corrupción o desmontaje sucio.
+
 ## Seguridad
 
 - Solo se aceptan dispositivos de bloque con `DEVTYPE=disk` y `ID_BUS=usb`.

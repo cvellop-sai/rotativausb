@@ -153,12 +153,28 @@ def signature(info):
 
 
 def unmount_all(devnode, log=None):
-    """Desmonta cualquier partición previa (GNOME auto-monta los USB)."""
+    """Desmonta cualquier partición previa (GNOME auto-monta los USB).
+
+    Si algún desmontaje falla se lanza un error: expulsar un dispositivo con
+    un sistema de archivos montado dejaría ext4 en estado sucio y el próximo
+    equipo lo montaría en modo solo lectura.
+    """
     out = run(["lsblk", "-n", "-o", "MOUNTPOINTS", devnode], log=log, check=False)
+    failed = []
     for line in out.splitlines():
         mp = line.strip()
-        if mp:
-            run(["umount", mp], log=log, check=False)
+        if not mp:
+            continue
+        if log:
+            log("$ umount " + mp)
+        proc = subprocess.run(
+            ["umount", mp], text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+        if proc.returncode:
+            failed.append("%s: %s" % (mp, (proc.stdout or "").strip()))
+    if failed:
+        raise DiskOpsError("No se pudieron desmontar: " + "; ".join(failed))
 
 
 def _clean_label(label):
@@ -184,8 +200,13 @@ def _find_partition(devnode, timeout=15):
 
 
 MKFS = {
-    "ext4": lambda p, l: ["mkfs.ext4", "-F", "-q", "-L", l, p],
-    "ext3": lambda p, l: ["mkfs.ext3", "-F", "-q", "-L", l, p],
+    # ^metadata_csum y ^64bit son características RO_COMPAT: un kernel más
+    # antiguo que no las entiende monta el volumen en modo solo lectura.
+    # En pendrives (<16 TiB) desactivarlas no tiene coste práctico.
+    "ext4": lambda p, l: ["mkfs.ext4", "-F", "-q", "-L", l,
+                          "-O", "^metadata_csum,^64bit", p],
+    "ext3": lambda p, l: ["mkfs.ext3", "-F", "-q", "-L", l,
+                          "-O", "^metadata_csum,^64bit", p],
     "exfat": lambda p, l: ["mkfs.exfat", "-n", l, p],
     "fat32": lambda p, l: ["mkfs.vfat", "-F", "32", "-n", l, p],
     "ntfs": lambda p, l: ["mkfs.ntfs", "-f", "-Q", "-L", l, p],
@@ -438,7 +459,8 @@ def prepare_device(info, config, log=None, progress=None):
     finally:
         if mountpoint:
             run(["sync"], log=log, check=False)
-            run(["umount", mountpoint], log=log, check=False)
+            # check=True: un umount fallido dejaría ext4 sucio.
+            run(["umount", mountpoint], log=log, check=True)
             shutil.rmtree(mountpoint, ignore_errors=True)
 
     progress(97, "sync", "Sincronizando datos y tabla de particiones…")
